@@ -2,6 +2,7 @@ const UserModel = require("../models/user.model")
 const jwt = require('jsonwebtoken')
 const ejs = require('ejs')
 const createOtpAndToken = require("../utlis/createOtpAndToken")
+const sendMail = require("../utlis/sendMail")
 require('dotenv').config()
 
 
@@ -25,8 +26,11 @@ module.exports.register = async (req, res) => {
 
         const {verification_Token,otp}=createOtpAndToken(req.body)
         const htmltemplate = await ejs.renderFile(__dirname+"/../views/email.ejs",{name:req.body.name,otp})
-        console.log(htmltemplate);
-        res.send("ok")
+       
+       const info = await sendMail(req.body.email,htmltemplate);
+       console.log("info",info);
+       
+        res.cookie("verification_Token",verification_Token).status(200).json({message:"OTP send Successfully",token:verification_Token})
 
     } catch (error) {
 

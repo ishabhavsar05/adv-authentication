@@ -5,11 +5,14 @@ require('dotenv').config();
 async function sendMail(userEmail,htmltemplate) {
     // Create a test account or replace with real credentials.
     const transporter = nodemailer.createTransport({
-       
+        service:"gmail",
         auth: {
             user: process.env.HOST_EMAIL,
             pass: process.env.HOST_PASS
         },
+        tls: {
+        rejectUnauthorized: false, // <-- Add this to ignore SSL certificate issues
+    },
     });
 
     // Wrap in an async IIFE so we can use await.
